@@ -10,7 +10,7 @@ public static class SettingsManager
     public static DirectoryInfo lastImagePath = new DirectoryInfo(".");
     public static DirectoryInfo lastSavePath = new DirectoryInfo(".");
 
-    public static int saveVersion = 3;
+    public static int saveVersion = 4;
 
     public static void Write()
     {
@@ -33,13 +33,12 @@ public static class SettingsManager
             write.WriteLine("{0}={1}", "lastsavedir", lastSavePath);
         }
     }
-    public static void Start()
-    {
+    public static void Start() {
         bool fullscreen = true;
         int width = Screen.width, height = Screen.height;
         bool shadows = true;
         _2dmode = false;
-        Screen.SetResolution(width, height, fullscreen);
+        Screen.SetResolution(Screen.currentResolution.width, Screen.currentResolution.height, fullscreen);
 
 
         if (File.Exists("settings.cfg"))
@@ -191,9 +190,13 @@ public static class SettingsManager
                     GameObject.Find("WidthInput").GetComponent<Slider>().value = width;
                     GameObject.Find("HeightInput").GetComponent<Slider>().value = height;
                 }
-                else {
+                else if (fileVersion <= 3) {
                     GameObject.Find("WidthInput").GetComponent<InputField>().text = Mathf.Lerp(17.5f, 100f, width).ToString();
                     GameObject.Find("HeightInput").GetComponent<InputField>().text = Mathf.Lerp(7.5f, 30f, height).ToString();
+                }
+                else {
+                    GameObject.Find("WidthInput").GetComponent<InputField>().text = (width).ToString();
+                    GameObject.Find("HeightInput").GetComponent<InputField>().text = (height).ToString();
                 }
                 BoardSizeController.SetBoardSize(new Vector2(width / 10f, height / 10f));
 
@@ -326,9 +329,9 @@ public static class SettingsManager
 
 
             //board width 4 byte int
-            writer.WriteDWord(int.Parse(GameObject.Find("WidthInput").GetComponent<InputField>().text));
+            writer.WriteDWord(Mathf.RoundToInt(GameObject.Find("Back").transform.localScale.x * 10));
             //board height 4 byte int
-            writer.WriteDWord(int.Parse(GameObject.Find("HeightInput").GetComponent<InputField>().text));
+            writer.WriteDWord(Mathf.RoundToInt(GameObject.Find("Back").transform.localScale.y * 10));
 
             foreach (var item in Object.FindObjectsOfType<PinScript>())
             {
