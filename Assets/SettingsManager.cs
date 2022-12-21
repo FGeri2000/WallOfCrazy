@@ -12,10 +12,8 @@ public static class SettingsManager
 
     public static int saveVersion = 4;
 
-    public static void Write()
-    {
-        using (StreamWriter write = new StreamWriter("settings.cfg", false, System.Text.Encoding.Default))
-        {
+    public static void Write() {
+        using (StreamWriter write = new StreamWriter("settings.cfg", false, System.Text.Encoding.Default)) {
             write.WriteLine("{0}={1}", "fullscreen", Screen.fullScreen);
             if (Screen.fullScreen) {
                 write.WriteLine("{0}={1}", "window_width", window_size.x);
@@ -41,15 +39,12 @@ public static class SettingsManager
         Screen.SetResolution(Screen.currentResolution.width, Screen.currentResolution.height, fullscreen);
 
 
-        if (File.Exists("settings.cfg"))
-        {
+        if (File.Exists("settings.cfg")) {
             StreamReader read = new StreamReader("settings.cfg");
 
-            while (!read.EndOfStream)
-            {
+            while (!read.EndOfStream) {
                 string line = read.ReadLine();
-                switch (line.Split('=')[0])
-                {
+                switch (line.Split('=')[0]) {
                     case "fullscreen":
                         fullscreen = bool.Parse(line.Split('=')[1]);
                         break;
@@ -81,8 +76,7 @@ public static class SettingsManager
             }
             read.Close();
         }
-        else
-        {
+        else {
             Write();
         }
 
@@ -103,8 +97,7 @@ public static class SettingsManager
         GameObject.Find("Sun").GetComponent<Light>().shadows = shadows ? LightShadows.Soft : LightShadows.None;
     }
 
-    public static void MenuOpen(bool toggle)
-    {
+    public static void MenuOpen(bool toggle) {
         if (toggle)
             GameObject.Find("MenuParent").GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -50);
         else
@@ -112,41 +105,37 @@ public static class SettingsManager
         Write();
     }
 
-    public static void ShadowToggle(bool toggle)
-    {
+    public static void ShadowToggle(bool toggle) {
         if (toggle)
             GameObject.Find("Sun").GetComponent<Light>().shadows = LightShadows.Soft;
         else
             GameObject.Find("Sun").GetComponent<Light>().shadows = LightShadows.None;
         Write();
     }
-    public static void FullscreenToggle(bool toggle)
-    {
+    public static void FullscreenToggle(bool toggle) {
         if (toggle)
             Screen.SetResolution(Screen.currentResolution.width, Screen.currentResolution.height, true);
         else
             Screen.SetResolution(window_size.x, window_size.y, false);
         Write();
     }
-    public static void _2DModeToggle(bool toggle)
-    {
+    public static void _2DModeToggle(bool toggle) {
         _2dmode = toggle;
         Write();
     }
-    public static void ImgLimitToggle(bool toggle)
-    {
+    public static void ImgLimitToggle(bool toggle) {
         imageLimit = toggle;
         Write();
     }
 
-    public static void ResolutionSet()
-    {
+    public static void ResolutionSet() {
         int val = GameObject.Find("ResolutionDropdown").GetComponent<Dropdown>().value;
         Screen.SetResolution(Screen.resolutions[val].width, Screen.resolutions[val].height, GameObject.Find("FullscreenToggle").GetComponent<Toggle>().isOn);
         Write();
     }
-    
-    enum SaveBlockType {
+
+    enum SaveBlockType
+    {
         Label = 0,
         Text = 1,
         Picture = 2,
@@ -154,21 +143,17 @@ public static class SettingsManager
         Connector = 4
     }
 
-    public static void Load(string path)
-    {
+    public static void Load(string path) {
         path = path.Trim('\n', '\r', '\"', '\'', ' ', '\t');
-        if (File.Exists(path))
-        {
+        if (File.Exists(path)) {
             BoardItemController.Singleton.ClearContext();
             BoardItemController.Singleton.PinCount = 0;
             GameObject.Find("Camera").transform.position = new Vector3(0, 0, -10);
-            for (int i = GameObject.Find("BoardItems").transform.childCount - 1; i >= 0; i--)
-            {
+            for (int i = GameObject.Find("BoardItems").transform.childCount - 1; i >= 0; i--) {
                 Object.DestroyImmediate(GameObject.Find("BoardItems").transform.GetChild(i).gameObject);
             }
 
-            using (FileStream writer = new FileStream(path, FileMode.Open, FileAccess.Read))
-            {
+            using (FileStream writer = new FileStream(path, FileMode.Open, FileAccess.Read)) {
                 int fileVersion = writer.ReadByte();
 
                 //default colors
@@ -201,16 +186,14 @@ public static class SettingsManager
                 BoardSizeController.SetBoardSize(new Vector2(width / 10f, height / 10f));
 
 
-                while (writer.Position < writer.Length)
-                {
+                while (writer.Position < writer.Length) {
                     SaveBlockType type = (SaveBlockType)writer.ReadByte();
                     Vector3 vec;
                     float rot;
                     GameObject created;
                     char[] arr;
 
-                    switch (type)
-                    {
+                    switch (type) {
                         case SaveBlockType.Label:
                             vec = new Vector3((writer.ReadDWord() / 100f), (writer.ReadDWord() / 100f));
                             rot = writer.ReadDWord() / 100f;
@@ -222,8 +205,7 @@ public static class SettingsManager
                             created.transform.localScale = new Vector3(created.GetComponent<PinScript>().scale, created.GetComponent<PinScript>().scale, created.GetComponent<PinScript>().scale);
 
                             arr = new char[writer.ReadWord()];
-                            for (int i = 0; i < arr.Length; i++)
-                            {
+                            for (int i = 0; i < arr.Length; i++) {
                                 arr[i] = (char)writer.ReadByte();
                                 arr[i] += (char)(writer.ReadByte() << 8);
                             }
@@ -238,16 +220,14 @@ public static class SettingsManager
                             created.name = "Pin" + writer.ReadDWord().ToString("d4");
 
                             arr = new char[writer.ReadWord()];
-                            for (int i = 0; i < arr.Length; i++)
-                            {
+                            for (int i = 0; i < arr.Length; i++) {
                                 arr[i] = (char)writer.ReadByte();
                                 arr[i] += (char)(writer.ReadByte() << 8);
                             }
                             created.transform.Find("Text").Find("Title").GetComponent<TMPro.TextMeshPro>().text = string.Concat(arr);
 
                             arr = new char[writer.ReadWord()];
-                            for (int i = 0; i < arr.Length; i++)
-                            {
+                            for (int i = 0; i < arr.Length; i++) {
                                 arr[i] = (char)writer.ReadByte();
                                 arr[i] += (char)(writer.ReadByte() << 8);
                             }
@@ -265,14 +245,12 @@ public static class SettingsManager
                             created.GetComponent<PinScript>().height = writer.ReadDWord();
                             created.GetComponent<PinScript>().scale = writer.ReadDWord() / 100f;
 
-                            if (fileVersion <= 2)
-                            {
+                            if (fileVersion <= 2) {
                                 Vector3 imgscale = new Vector3(writer.ReadDWord() / 100f, 1, writer.ReadDWord() / 100f);
                                 created.transform.Find("Picture").localScale = imgscale;
                                 created.transform.Find("Picture").localPosition = new Vector3(created.transform.Find("Picture").localPosition.x, -.3333333f - (created.transform.Find("Picture").localScale.z - 1) / 2.6666666f, created.transform.Find("Picture").localPosition.z);
                             }
-                            else
-                            {
+                            else {
                                 created.GetComponent<PinScript>().ResizeImage();
                             }
 
@@ -308,11 +286,9 @@ public static class SettingsManager
             }
         }
     }
-    public static void Save(string path)
-    {
+    public static void Save(string path) {
         path = path.Trim('\n', '\r', '\"', '\'', ' ', '\t');
-        using (FileStream writer = new FileStream(path, FileMode.Create, FileAccess.Write))
-        {
+        using (FileStream writer = new FileStream(path, FileMode.Create, FileAccess.Write)) {
             BoardItemController.Singleton.ClearContext();
             GameObject.Find("Camera").transform.position = new Vector3(0, 0, -10);
 
@@ -333,8 +309,7 @@ public static class SettingsManager
             //board height 4 byte int
             writer.WriteDWord(Mathf.RoundToInt(GameObject.Find("Back").transform.localScale.y * 10));
 
-            foreach (var item in Object.FindObjectsOfType<PinScript>())
-            {
+            foreach (var item in Object.FindObjectsOfType<PinScript>()) {
                 Transform tform = item.transform;
 
                 //label 0
@@ -356,16 +331,14 @@ public static class SettingsManager
                 writer.WriteDWord(int.Parse(item.name.Substring(3)));
 
 
-                switch (item.type)
-                {
+                switch (item.type) {
                     case PinTypeEnum.Label:
                         writer.WriteDWord(Mathf.RoundToInt(item.scale * 100));
                         string text = item.transform.Find("Header").Find("Text").GetComponent<TMPro.TextMeshPro>().text;
                         //text size 2 byte int
                         writer.WriteWord((short)text.Length);
                         //text varsize vchar
-                        for (int i = 0; i < (short)text.Length; i++)
-                        {
+                        for (int i = 0; i < (short)text.Length; i++) {
                             writer.WriteByte((byte)text[i]);
                             writer.WriteByte((byte)(text[i] >> 8));
                         }
@@ -376,8 +349,7 @@ public static class SettingsManager
                         string text1 = item.transform.Find("Text").Find("Title").GetComponent<TMPro.TextMeshPro>().text;
                         writer.WriteWord((short)text1.Length);
                         //title varsize wchar
-                        for (int i = 0; i < (short)text1.Length; i++)
-                        {
+                        for (int i = 0; i < (short)text1.Length; i++) {
                             writer.WriteByte((byte)text1[i]);
                             writer.WriteByte((byte)(text1[i] >> 8));
                         }
@@ -386,8 +358,7 @@ public static class SettingsManager
                         //text varsize wchar
                         string text2 = item.transform.Find("Text").Find("Text").GetComponent<TMPro.TextMeshPro>().text;
                         writer.WriteWord((short)text2.Length);
-                        for (int i = 0; i < (short)text2.Length; i++)
-                        {
+                        for (int i = 0; i < (short)text2.Length; i++) {
                             writer.WriteByte((byte)text2[i]);
                             writer.WriteByte((byte)(text2[i] >> 8));
                         }
@@ -396,8 +367,7 @@ public static class SettingsManager
                         writer.WriteDWord(item.width);
                         writer.WriteDWord(item.height);
                         writer.WriteDWord(Mathf.RoundToInt(item.scale * 100f));
-                        if (saveVersion <= 2)
-                        {
+                        if (saveVersion <= 2) {
                             //x scale 2 byte short
                             writer.WriteDWord(Mathf.RoundToInt(item.transform.Find("Picture").localScale.x * 100f));
                             //y scale 2 byte short
@@ -417,8 +387,7 @@ public static class SettingsManager
 
 
 
-            foreach (var item in Object.FindObjectsOfType<LineScript>())
-            {
+            foreach (var item in Object.FindObjectsOfType<LineScript>()) {
                 Transform tform = item.transform;
 
                 //line 3

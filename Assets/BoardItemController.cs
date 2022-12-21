@@ -13,12 +13,10 @@ public class BoardItemController : MonoBehaviour
 
     public int PinCount = 0;
 
-    public void PinButtonCallback(int col)
-    {
+    public void PinButtonCallback(int col) {
         int r = 0, g = 0, b = 0;
 
-        switch ((ColorEnum)col)
-        {
+        switch ((ColorEnum)col) {
             case ColorEnum.Red:
                 r = 228;
                 break;
@@ -44,12 +42,10 @@ public class BoardItemController : MonoBehaviour
         SetPinColor(new Color(r / 255f, g / 255f, b / 255f));
         UpdateColorSliderAndInput();
     }
-    public void LineButtonCallback(int col)
-    {
+    public void LineButtonCallback(int col) {
         int r = 0, g = 0, b = 0;
 
-        switch ((ColorEnum)col)
-        {
+        switch ((ColorEnum)col) {
             case ColorEnum.Red:
                 r = 228;
                 break;
@@ -76,8 +72,7 @@ public class BoardItemController : MonoBehaviour
         UpdateColorSliderAndInput();
     }
 
-    public void UpdateColorSliderAndInput()
-    {
+    public void UpdateColorSliderAndInput() {
         GameObject.Find("PinInputRed").GetComponent<InputField>().text = (PinColor.r * 255).ToString();
         GameObject.Find("PinInputGreen").GetComponent<InputField>().text = (PinColor.g * 255).ToString();
         GameObject.Find("PinInputBlue").GetComponent<InputField>().text = (PinColor.b * 255).ToString();
@@ -95,8 +90,7 @@ public class BoardItemController : MonoBehaviour
         GameObject.Find("LineSliderBlue").GetComponent<Slider>().value = LineColor.b * 255;
     }
 
-    public void InputCheck()
-    {
+    public void InputCheck() {
         int pr = int.Parse(GameObject.Find("PinInputRed").GetComponent<InputField>().text);
         int pg = int.Parse(GameObject.Find("PinInputGreen").GetComponent<InputField>().text);
         int pb = int.Parse(GameObject.Find("PinInputBlue").GetComponent<InputField>().text);
@@ -105,40 +99,33 @@ public class BoardItemController : MonoBehaviour
         int lg = int.Parse(GameObject.Find("LineInputGreen").GetComponent<InputField>().text);
         int lb = int.Parse(GameObject.Find("LineInputBlue").GetComponent<InputField>().text);
 
-        if (pr > 255 || pr < 0)
-        {
+        if (pr > 255 || pr < 0) {
             GameObject.Find("PinInputRed").GetComponent<InputField>().text = Mathf.Clamp(pr, 0, 255).ToString();
         }
 
-        if (pg > 255 || pg < 0)
-        {
+        if (pg > 255 || pg < 0) {
             GameObject.Find("PinInputGreen").GetComponent<InputField>().text = Mathf.Clamp(pg, 0, 255).ToString();
         }
 
-        if (pb > 255 || pb < 0)
-        {
+        if (pb > 255 || pb < 0) {
             GameObject.Find("PinInputBlue").GetComponent<InputField>().text = Mathf.Clamp(pb, 0, 255).ToString();
         }
 
-        if (lr > 255 || lr < 0)
-        {
+        if (lr > 255 || lr < 0) {
             GameObject.Find("LineInputRed").GetComponent<InputField>().text = Mathf.Clamp(lr, 0, 255).ToString();
         }
 
-        if (lg > 255 || lg < 0)
-        {
+        if (lg > 255 || lg < 0) {
             GameObject.Find("LineInputGreen").GetComponent<InputField>().text = Mathf.Clamp(lg, 0, 255).ToString();
         }
 
-        if (lb > 255 || lb < 0)
-        {
+        if (lb > 255 || lb < 0) {
             GameObject.Find("LineInputBlue").GetComponent<InputField>().text = Mathf.Clamp(lb, 0, 255).ToString();
         }
     }
 
     public int LineWidth { get; private set; } = 2;
-    public void SetLineWidth(float width)
-    {
+    public void SetLineWidth(float width) {
         //int val = (int)GameObject.Find("LineWidthSlider").GetComponent<Slider>().value;
         //GameObject.Find("LineWidthLabel").GetComponent<Text>().text = "Line width: " + (val);
         //LineWidth = val;
@@ -148,14 +135,12 @@ public class BoardItemController : MonoBehaviour
         LineWidth = (int)width;
     }
     public Color PinColor { get; private set; }
-    public void SetPinColor(Color col)
-    {
+    public void SetPinColor(Color col) {
         PinColor = col;
         GameObject.Find("PinDisplay").GetComponent<Image>().color = col;
     }
     public Color LineColor { get; private set; }
-    public void SetLineColor(Color col)
-    {
+    public void SetLineColor(Color col) {
         LineColor = col;
         GameObject.Find("LineDisplay").GetComponent<Image>().color = col;
     }
@@ -170,79 +155,64 @@ public class BoardItemController : MonoBehaviour
     private GameObject dialog;
     private StandaloneInputModuleV2 StandaloneInputModuleV2 { get { return GameObject.Find("EventSystem").GetComponent<StandaloneInputModuleV2>(); } }
 
-    public void Quit()
-    {
+    public void Quit() {
         SettingsManager.Write();
         dialog = Instantiate(Resources.Load<GameObject>("Prefabs/ConfirmDialog"), GameObject.Find("Canvas").transform);
         dialog.transform.Find("Text").GetComponent<Text>().text = "Are you sure? Unsaved changes will be lost.";
         dialog.transform.Find("Accept").GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(() => {
             Application.Quit();
         }));
-        dialog.transform.Find("Cancel").GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(() =>
-        {
+        dialog.transform.Find("Cancel").GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(() => {
             Destroy(dialog);
             dialog = null;
         }));
     }
 
-    public void Start()
-    {
+    public void Start() {
         PinButtonCallback(0);
         LineButtonCallback(0);
 
-        GameObject.Find("PinSliderRed").GetComponent<Slider>().onValueChanged.AddListener((val) =>
-        {
+        GameObject.Find("PinSliderRed").GetComponent<Slider>().onValueChanged.AddListener((val) => {
             GameObject.Find("PinInputRed").GetComponent<InputField>().text = val.ToString();
         });
-        GameObject.Find("PinSliderGreen").GetComponent<Slider>().onValueChanged.AddListener((val) =>
-        {
+        GameObject.Find("PinSliderGreen").GetComponent<Slider>().onValueChanged.AddListener((val) => {
             GameObject.Find("PinInputGreen").GetComponent<InputField>().text = val.ToString();
         });
-        GameObject.Find("PinSliderBlue").GetComponent<Slider>().onValueChanged.AddListener((val) =>
-        {
+        GameObject.Find("PinSliderBlue").GetComponent<Slider>().onValueChanged.AddListener((val) => {
             GameObject.Find("PinInputBlue").GetComponent<InputField>().text = val.ToString();
         });
 
-        GameObject.Find("LineSliderRed").GetComponent<Slider>().onValueChanged.AddListener((val) =>
-        {
+        GameObject.Find("LineSliderRed").GetComponent<Slider>().onValueChanged.AddListener((val) => {
             GameObject.Find("LineInputRed").GetComponent<InputField>().text = val.ToString();
         });
-        GameObject.Find("LineSliderGreen").GetComponent<Slider>().onValueChanged.AddListener((val) =>
-        {
+        GameObject.Find("LineSliderGreen").GetComponent<Slider>().onValueChanged.AddListener((val) => {
             GameObject.Find("LineInputGreen").GetComponent<InputField>().text = val.ToString();
         });
-        GameObject.Find("LineSliderBlue").GetComponent<Slider>().onValueChanged.AddListener((val) =>
-        {
+        GameObject.Find("LineSliderBlue").GetComponent<Slider>().onValueChanged.AddListener((val) => {
             GameObject.Find("LineInputBlue").GetComponent<InputField>().text = val.ToString();
         });
 
-        GameObject.Find("PinInputRed").GetComponent<InputField>().onValueChanged.AddListener((UnityEngine.Events.UnityAction<string>)((str) =>
-        {
+        GameObject.Find("PinInputRed").GetComponent<InputField>().onValueChanged.AddListener((UnityEngine.Events.UnityAction<string>)((str) => {
             int val = int.Parse(str);
-            if (val > 255 || val < 0)
-            {
+            if (val > 255 || val < 0) {
                 val = Mathf.Clamp(val, 0, 255);
             }
 
             GameObject.Find("PinSliderRed").GetComponent<Slider>().value = val;
             SetPinColor(new Color(val / 255f, (float)PinColor.g, (float)PinColor.b));
         }));
-        GameObject.Find("PinInputGreen").GetComponent<InputField>().onValueChanged.AddListener((UnityEngine.Events.UnityAction<string>)((str) =>
-        {
+        GameObject.Find("PinInputGreen").GetComponent<InputField>().onValueChanged.AddListener((UnityEngine.Events.UnityAction<string>)((str) => {
             int val = int.Parse(str);
-            if (val > 255 || val < 0)
-            {
+            if (val > 255 || val < 0) {
                 val = Mathf.Clamp(val, 0, 255);
             }
 
             GameObject.Find("PinSliderGreen").GetComponent<Slider>().value = val;
             SetPinColor(new Color((float)PinColor.r, val / 255f, (float)PinColor.b));
         }));
-        GameObject.Find("PinInputBlue").GetComponent<InputField>().onValueChanged.AddListener((UnityEngine.Events.UnityAction<string>)((str) =>
-        {
+        GameObject.Find("PinInputBlue").GetComponent<InputField>().onValueChanged.AddListener((UnityEngine.Events.UnityAction<string>)((str) => {
             int val = int.Parse(str);
-            if (val > 255 || val < 0)
-            {
+            if (val > 255 || val < 0) {
                 val = Mathf.Clamp(val, 0, 255);
             }
 
@@ -250,33 +220,27 @@ public class BoardItemController : MonoBehaviour
             SetPinColor(new Color((float)PinColor.r, (float)PinColor.g, val / 255f));
         }));
 
-        GameObject.Find("LineInputRed").GetComponent<InputField>().onValueChanged.AddListener((UnityEngine.Events.UnityAction<string>)((str) =>
-        {
+        GameObject.Find("LineInputRed").GetComponent<InputField>().onValueChanged.AddListener((UnityEngine.Events.UnityAction<string>)((str) => {
             int val = int.Parse(str);
-            if (val > 255 || val < 0)
-            {
+            if (val > 255 || val < 0) {
                 val = Mathf.Clamp(val, 0, 255);
             }
 
             GameObject.Find("LineSliderRed").GetComponent<Slider>().value = val;
             SetLineColor(new Color(val / 255f, (float)LineColor.g, (float)LineColor.b));
         }));
-        GameObject.Find("LineInputGreen").GetComponent<InputField>().onValueChanged.AddListener((UnityEngine.Events.UnityAction<string>)((str) =>
-        {
+        GameObject.Find("LineInputGreen").GetComponent<InputField>().onValueChanged.AddListener((UnityEngine.Events.UnityAction<string>)((str) => {
             int val = int.Parse(str);
-            if (val > 255 || val < 0)
-            {
+            if (val > 255 || val < 0) {
                 val = Mathf.Clamp(val, 0, 255);
             }
 
             GameObject.Find("LineSliderGreen").GetComponent<Slider>().value = val;
             SetLineColor(new Color((float)LineColor.r, val / 255f, (float)LineColor.b));
         }));
-        GameObject.Find("LineInputBlue").GetComponent<InputField>().onValueChanged.AddListener((UnityEngine.Events.UnityAction<string>)((str) =>
-        {
+        GameObject.Find("LineInputBlue").GetComponent<InputField>().onValueChanged.AddListener((UnityEngine.Events.UnityAction<string>)((str) => {
             int val = int.Parse(str);
-            if (val > 255 || val < 0)
-            {
+            if (val > 255 || val < 0) {
                 val = Mathf.Clamp(val, 0, 255);
             }
 
@@ -286,37 +250,31 @@ public class BoardItemController : MonoBehaviour
 
 
         System.Collections.Generic.List<string> list = new System.Collections.Generic.List<string>();
-        foreach (var item in Screen.resolutions)
-        {
+        foreach (var item in Screen.resolutions) {
             list.Add(item.ToString());
         }
 
-        GameObject.Find("ImageLimitToggle").GetComponent<Toggle>().onValueChanged.AddListener((val) =>
-        {
+        GameObject.Find("ImageLimitToggle").GetComponent<Toggle>().onValueChanged.AddListener((val) => {
             Debug.Log("imglim change: " + !val);
             SettingsManager.imageLimit = !val;
         });
 
         GameObject created;
-        GameObject.Find("LoadButton").GetComponent<Button>().onClick.AddListener(() =>
-        {
+        GameObject.Find("LoadButton").GetComponent<Button>().onClick.AddListener(() => {
             created = Instantiate(Resources.Load<GameObject>("Prefabs/LoadDialog"), GameObject.Find("Canvas").transform);
             GameObject.Find("LoadButton").GetComponent<Button>().enabled = false;
             GameObject.Find("SaveButton").GetComponent<Button>().enabled = false;
-            created.GetComponentInChildren<FileDisplay>().cancel = new System.Action(() =>
-            {
+            created.GetComponentInChildren<FileDisplay>().cancel = new System.Action(() => {
                 GameObject.Find("LoadButton").GetComponent<Button>().enabled = true;
                 GameObject.Find("SaveButton").GetComponent<Button>().enabled = true;
             });
-            created.GetComponentInChildren<FileDisplay>().fileAction = new System.Action<FileInfo>((inf) =>
-            {
+            created.GetComponentInChildren<FileDisplay>().fileAction = new System.Action<FileInfo>((inf) => {
                 if (!inf.Exists) return;
                 SettingsManager.lastSavePath = inf.Directory;
 
                 dialog = Instantiate(Resources.Load<GameObject>("Prefabs/ConfirmDialog"), GameObject.Find("Canvas").transform);
                 dialog.transform.Find("Text").GetComponent<Text>().text = "Are you sure? Unsaved changes will be lost.";
-                dialog.transform.Find("Accept").GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(() =>
-                {
+                dialog.transform.Find("Accept").GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(() => {
                     SettingsManager.Load(inf.FullName);
                     GameObject.Find("SaveButton").GetComponent<Button>().enabled = true;
                     GameObject.Find("LoadButton").GetComponent<Button>().enabled = true;
@@ -324,8 +282,7 @@ public class BoardItemController : MonoBehaviour
                     Destroy(created);
                     dialog = null;
                 }));
-                dialog.transform.Find("Cancel").GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(() =>
-                {
+                dialog.transform.Find("Cancel").GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(() => {
                     Destroy(dialog);
                     dialog = null;
                 }));
@@ -333,60 +290,51 @@ public class BoardItemController : MonoBehaviour
 
             created.GetComponentInChildren<FileDisplay>().Display(SettingsManager.lastSavePath, ".cbs");
         });
-        GameObject.Find("SaveButton").GetComponent<Button>().onClick.AddListener(() =>
-        {
+        GameObject.Find("SaveButton").GetComponent<Button>().onClick.AddListener(() => {
             created = Instantiate(Resources.Load<GameObject>("Prefabs/FileSaveDialog"), GameObject.Find("Canvas").transform);
 
             GameObject.Find("LoadButton").GetComponent<Button>().enabled = false;
             GameObject.Find("SaveButton").GetComponent<Button>().enabled = false;
 
-            created.GetComponentInChildren<FileDisplay>().cancel = new System.Action(() =>
-            {
+            created.GetComponentInChildren<FileDisplay>().cancel = new System.Action(() => {
                 GameObject.Find("LoadButton").GetComponent<Button>().enabled = true;
                 GameObject.Find("SaveButton").GetComponent<Button>().enabled = true;
             });
 
-            created.transform.Find("Save").GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(() =>
-            {
+            created.transform.Find("Save").GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(() => {
                 string path = created.transform.Find("Path").GetComponent<InputField>().text;
                 string name = created.transform.Find("InputField").GetComponent<InputField>().text == "" ? "Unnamed" : created.transform.Find("InputField").GetComponent<InputField>().text;
 
-                if (File.Exists(path + "\\" + name + ".cbs"))
-                {
+                if (File.Exists(path + Path.DirectorySeparatorChar + name + ".cbs")) {
                     dialog = Instantiate(Resources.Load<GameObject>("Prefabs/ConfirmDialog"), GameObject.Find("Canvas").transform);
                     dialog.transform.Find("Text").GetComponent<Text>().text = "Are you sure you want to overwrite this file?";
-                    dialog.transform.Find("Accept").GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(() =>
-                    {
-                        SettingsManager.Save(path + "\\" + name + ".cbs");
+                    dialog.transform.Find("Accept").GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(() => {
+                        SettingsManager.Save(path + Path.DirectorySeparatorChar + name + ".cbs");
                         GameObject.Find("LoadButton").GetComponent<Button>().enabled = true;
                         GameObject.Find("SaveButton").GetComponent<Button>().enabled = true;
                         Destroy(dialog);
                         Destroy(created);
                         dialog = null;
                     }));
-                    dialog.transform.Find("Cancel").GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(() =>
-                    {
+                    dialog.transform.Find("Cancel").GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(() => {
                         Destroy(dialog);
                         dialog = null;
                     }));
                 }
-                else
-                {
-                    SettingsManager.Save(path + "\\" + name + ".cbs");
+                else {
+                    SettingsManager.Save(path + Path.DirectorySeparatorChar + name + ".cbs");
                     GameObject.Find("LoadButton").GetComponent<Button>().enabled = true;
                     GameObject.Find("SaveButton").GetComponent<Button>().enabled = true;
                     Destroy(created);
                 }
             }));
 
-            created.GetComponentInChildren<FileDisplay>().fileAction = new System.Action<FileInfo>((inf) =>
-            {
+            created.GetComponentInChildren<FileDisplay>().fileAction = new System.Action<FileInfo>((inf) => {
                 if (!inf.Exists) return;
 
                 dialog = Instantiate(Resources.Load<GameObject>("Prefabs/ConfirmDialog"), GameObject.Find("Canvas").transform);
                 dialog.transform.Find("Text").GetComponent<Text>().text = "Are you sure you want to overwrite this file?";
-                dialog.transform.Find("Accept").GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(() =>
-                {
+                dialog.transform.Find("Accept").GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(() => {
                     SettingsManager.Save(inf.FullName);
                     GameObject.Find("LoadButton").GetComponent<Button>().enabled = true;
                     GameObject.Find("SaveButton").GetComponent<Button>().enabled = true;
@@ -394,8 +342,7 @@ public class BoardItemController : MonoBehaviour
                     Destroy(created);
                     dialog = null;
                 }));
-                dialog.transform.Find("Cancel").GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(() =>
-                {
+                dialog.transform.Find("Cancel").GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(() => {
                     Destroy(dialog);
                     dialog = null;
                 }));
@@ -404,53 +351,41 @@ public class BoardItemController : MonoBehaviour
             created.GetComponentInChildren<FileDisplay>().Display(SettingsManager.lastSavePath, ".cbs");
         });
     }
-    public void Update()
-    {
+    public void Update() {
         Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition, Camera.MonoOrStereoscopicEye.Mono), out RaycastHit info, 50f);
 
 
-        if (Input.GetMouseButtonDown(0))
-        {
-            if (StandaloneInputModuleV2.GameObjectUnderPointer() == null)
-            {
+        if (Input.GetMouseButtonDown(0)) {
+            if (StandaloneInputModuleV2.GameObjectUnderPointer() == null) {
                 ClearContext();
             }
 
-            if (Input.GetKey(KeyCode.LeftShift))
-            {
+            if (Input.GetKey(KeyCode.LeftShift)) {
                 ShiftLeftClick();
             }
-            else
-            {
+            else {
                 LeftClick();
             }
         }
-        if (Input.GetMouseButton(0) && info.transform != null && !selected)
-        {
-            if (!dragged && info.transform.parent?.parent?.GetComponent<PinScript>() && (info.transform.name == "Pin") && (StandaloneInputModuleV2.GameObjectUnderPointer() == null))
-            {
+        if (Input.GetMouseButton(0) && info.transform != null && !selected) {
+            if (!dragged && info.transform.parent?.parent?.GetComponent<PinScript>() && (info.transform.name == "Pin") && (StandaloneInputModuleV2.GameObjectUnderPointer() == null)) {
                 Transform tform = info.transform.parent.parent;
                 Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition, Camera.MonoOrStereoscopicEye.Mono), out info, 50f, ~LayerMask.GetMask("BoardItem", "Ignore Raycast"));
                 dragged = tform.gameObject;
                 dragpivot = tform.position - info.point;
             }
-            else if (dragged)
-            {
+            else if (dragged) {
                 Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition, Camera.MonoOrStereoscopicEye.Mono), out info, 50f, ~LayerMask.GetMask("BoardItem", "Ignore Raycast"));
-                if (info.transform.name == "Back")
-                {
+                if (info.transform.name == "Back") {
                     dragged.transform.position = info.point + dragpivot;
                 }
             }
         }
-        if (Input.GetMouseButtonUp(0))
-        {
+        if (Input.GetMouseButtonUp(0)) {
             dragged = null;
         }
-        if (Input.GetMouseButtonDown(1))
-        {
-            if (StandaloneInputModuleV2.GameObjectUnderPointer() == null)
-            {
+        if (Input.GetMouseButtonDown(1)) {
+            if (StandaloneInputModuleV2.GameObjectUnderPointer() == null) {
                 ClearContext();
             }
 
@@ -458,25 +393,19 @@ public class BoardItemController : MonoBehaviour
             Destroy(line);
             RightClick();
         }
-        if (selected)
-        {
+        if (selected) {
             line.GetComponent<LineRenderer>().SetPosition(1, new Vector3(info.point.x, info.point.y, info.point.z - .20f));
         }
     }
 
-    private void LeftClick()
-    {
+    private void LeftClick() {
         Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition, Camera.MonoOrStereoscopicEye.Mono), out RaycastHit info);
-        if (selected)
-        {
-            if (info.transform.parent.parent.GetComponent<PinScript>())
-            {
+        if (selected) {
+            if (info.transform.parent.parent.GetComponent<PinScript>()) {
                 Transform tform = info.transform.parent.parent;
 
-                foreach (var item in Object.FindObjectsOfType<LineScript>())
-                {
-                    if ((item.pin1 == selected.GetComponent<PinScript>() && item.pin2 == tform.GetComponent<PinScript>()) || (item.pin2 == selected.GetComponent<PinScript>() && item.pin1 == tform.GetComponent<PinScript>()))
-                    {
+                foreach (var item in Object.FindObjectsOfType<LineScript>()) {
+                    if ((item.pin1 == selected.GetComponent<PinScript>() && item.pin2 == tform.GetComponent<PinScript>()) || (item.pin2 == selected.GetComponent<PinScript>() && item.pin1 == tform.GetComponent<PinScript>())) {
                         Destroy(item.gameObject);
                     }
                 }
@@ -489,26 +418,21 @@ public class BoardItemController : MonoBehaviour
                 selected = null;
                 line = null;
             }
-            else
-            {
+            else {
                 selected = null;
                 Destroy(line);
             }
         }
     }
-    private void ShiftLeftClick()
-    {
+    private void ShiftLeftClick() {
         Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition, Camera.MonoOrStereoscopicEye.Mono), out RaycastHit info);
-        if (!selected && info.transform.parent.parent.GetComponent<PinScript>())
-        {
+        if (!selected && info.transform.parent.parent.GetComponent<PinScript>()) {
             Transform tform = info.transform.parent.parent;
             selected = tform.gameObject;
 
             line = Instantiate(Resources.Load<GameObject>("Prefabs/Line"), GameObject.Find("BoardItems").transform);
-            for (int i = 1; i <= linelimit; i++)
-            {
-                if (!GameObject.Find("Line" + i.ToString("d7")))
-                {
+            for (int i = 1; i <= linelimit; i++) {
+                if (!GameObject.Find("Line" + i.ToString("d7"))) {
                     line.name = "Line" + i.ToString("d7");
                     break;
                 }
@@ -519,10 +443,8 @@ public class BoardItemController : MonoBehaviour
             line.GetComponent<LineScript>().SetWidth(LineWidth);
             line.GetComponent<LineScript>().SetColor(LineColor);
         }
-        else if (selected)
-        {
-            if (info.transform.parent.parent.GetComponentInChildren<PinScript>())
-            {
+        else if (selected) {
+            if (info.transform.parent.parent.GetComponentInChildren<PinScript>()) {
                 Transform tform = info.transform.parent.parent;
 
                 line.GetComponent<LineScript>().pin1 = selected.GetComponent<PinScript>();
@@ -533,20 +455,17 @@ public class BoardItemController : MonoBehaviour
                 selected = null;
                 line = null;
             }
-            else
-            {
+            else {
                 selected = null;
                 Destroy(line);
             }
         }
     }
-    private void RightClick()
-    {
+    private void RightClick() {
         Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition, Camera.MonoOrStereoscopicEye.Mono), out RaycastHit info);
         ClearContext();
 
-        if (info.transform?.name == "Back")
-        {
+        if (info.transform?.name == "Back") {
             Vector2 can = new Vector2(GameObject.Find("Canvas").GetComponent<RectTransform>().sizeDelta.x, GameObject.Find("Canvas").GetComponent<RectTransform>().sizeDelta.y);
 
             ClearContext();
@@ -554,8 +473,7 @@ public class BoardItemController : MonoBehaviour
                 GameObject button1 = Instantiate(Resources.Load<GameObject>("Prefabs/Button"), GameObject.Find("ContextParent").transform);
                 button1.transform.Find("Text").GetComponent<Text>().text = "Create Label";
                 button1.GetComponent<RectTransform>().anchoredPosition = new Vector2((Input.mousePosition.x / Screen.safeArea.width) * can.x + (Input.mousePosition.x < Screen.safeArea.width / 3 ? 80 : -80), (Input.mousePosition.y / Screen.safeArea.height) * can.y + (Input.mousePosition.y < Screen.safeArea.height / 3 ? 15 : -15));
-                button1.GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(() =>
-                {
+                button1.GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(() => {
                     CreateLabel(info.point, Random.Range(-5, 5));
                     ClearContext();
                 }));
@@ -564,8 +482,7 @@ public class BoardItemController : MonoBehaviour
                 GameObject button2 = Instantiate(Resources.Load<GameObject>("Prefabs/Button"), GameObject.Find("ContextParent").transform);
                 button2.transform.Find("Text").GetComponent<Text>().text = "Create Text";
                 button2.GetComponent<RectTransform>().anchoredPosition = new Vector2((Input.mousePosition.x / Screen.safeArea.width) * can.x + (Input.mousePosition.x < Screen.safeArea.width / 3 ? 80 : -80), (Input.mousePosition.y / Screen.safeArea.height) * can.y + (Input.mousePosition.y < Screen.safeArea.height / 3 ? 45 : -45));
-                button2.GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(() =>
-                {
+                button2.GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(() => {
                     CreateText(info.point, Random.Range(-5, 5));
                     ClearContext();
                 }));
@@ -573,8 +490,7 @@ public class BoardItemController : MonoBehaviour
                 GameObject button3 = Instantiate(Resources.Load<GameObject>("Prefabs/Button"), GameObject.Find("ContextParent").transform);
                 button3.transform.Find("Text").GetComponent<Text>().text = "Create Picture";
                 button3.GetComponent<RectTransform>().anchoredPosition = new Vector2((Input.mousePosition.x / Screen.safeArea.width) * can.x + (Input.mousePosition.x < Screen.safeArea.width / 3 ? 80 : -80), (Input.mousePosition.y / Screen.safeArea.height) * can.y + (Input.mousePosition.y < Screen.safeArea.height / 3 ? 75 : -75));
-                button3.GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(() =>
-                {
+                button3.GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(() => {
                     CreatePicture(info.point, Random.Range(-5, 5));
                     ClearContext();
                 }));
@@ -582,8 +498,7 @@ public class BoardItemController : MonoBehaviour
                 GameObject button4 = Instantiate(Resources.Load<GameObject>("Prefabs/Button"), GameObject.Find("ContextParent").transform);
                 button4.transform.Find("Text").GetComponent<Text>().text = "Create Connector";
                 button4.GetComponent<RectTransform>().anchoredPosition = new Vector2((Input.mousePosition.x / Screen.safeArea.width) * can.x + (Input.mousePosition.x < Screen.safeArea.width / 3 ? 80 : -80), (Input.mousePosition.y / Screen.safeArea.height) * can.y + (Input.mousePosition.y < Screen.safeArea.height / 3 ? 105 : -105));
-                button4.GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(() =>
-                {
+                button4.GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(() => {
                     CreateEmpty(info.point, Random.Range(-5, 5));
                     ClearContext();
                 }));
@@ -600,22 +515,18 @@ public class BoardItemController : MonoBehaviour
             }
         }
 
-        if (info.transform?.parent.parent.GetComponent<PinScript>())
-        {
+        if (info.transform?.parent.parent.GetComponent<PinScript>()) {
             PinScript script = info.transform.parent.parent.GetComponent<PinScript>();
 
-            switch (script.type)
-            {
+            switch (script.type) {
                 case PinTypeEnum.Label:
                     editor = Instantiate(Resources.Load<GameObject>("Prefabs/LabelEditor"), GameObject.Find("Canvas").transform);
                     editor.transform.Find("InputField").GetComponent<InputField>().text = script.transform.Find("Header").Find("Text").GetComponent<TMPro.TextMeshPro>().text;
-                    editor.transform.Find("InputField").GetComponent<InputField>().onValueChanged.AddListener(new UnityEngine.Events.UnityAction<string>((val) =>
-                    {
+                    editor.transform.Find("InputField").GetComponent<InputField>().onValueChanged.AddListener(new UnityEngine.Events.UnityAction<string>((val) => {
                         script.transform.Find("Header").Find("Text").GetComponent<TMPro.TextMeshPro>().text = val;
                     }));
                     editor.transform.Find("ScaleSlider").GetComponent<Slider>().value = script.scale * 100;
-                    editor.transform.Find("ScaleSlider").GetComponent<Slider>().onValueChanged.AddListener(new UnityEngine.Events.UnityAction<float>((val) =>
-                    {
+                    editor.transform.Find("ScaleSlider").GetComponent<Slider>().onValueChanged.AddListener(new UnityEngine.Events.UnityAction<float>((val) => {
                         script.scale = val / 100;
                         script.transform.localScale = new Vector3(script.scale, script.scale, script.scale);
                         script.transform.localPosition = new Vector3(script.transform.localPosition.x, /*-.3333333f - ((val / 100) - 1) / 2.6666666f*/script.transform.localPosition.y, script.transform.localPosition.z);
@@ -625,26 +536,21 @@ public class BoardItemController : MonoBehaviour
                 case PinTypeEnum.Text:
                     editor = Instantiate(Resources.Load<GameObject>("Prefabs/TextEditor"), GameObject.Find("Canvas").transform);
                     editor.transform.Find("TitleInputField").GetComponent<InputField>().text = script.transform.Find("Text").Find("Title").GetComponent<TMPro.TextMeshPro>().text;
-                    editor.transform.Find("TitleInputField").GetComponent<InputField>().onValueChanged.AddListener(new UnityEngine.Events.UnityAction<string>((val) =>
-                    {
+                    editor.transform.Find("TitleInputField").GetComponent<InputField>().onValueChanged.AddListener(new UnityEngine.Events.UnityAction<string>((val) => {
                         script.transform.Find("Text").Find("Title").GetComponent<TMPro.TextMeshPro>().text = val;
                     }));
                     editor.transform.Find("TextInputField").GetComponent<InputField>().text = script.transform.Find("Text").Find("Text").GetComponent<TMPro.TextMeshPro>().text;
-                    editor.transform.Find("TextInputField").GetComponent<InputField>().onValueChanged.AddListener(new UnityEngine.Events.UnityAction<string>((val) =>
-                    {
+                    editor.transform.Find("TextInputField").GetComponent<InputField>().onValueChanged.AddListener(new UnityEngine.Events.UnityAction<string>((val) => {
                         script.transform.Find("Text").Find("Text").GetComponent<TMPro.TextMeshPro>().text = val;
                     }));
                     break;
                 case PinTypeEnum.Picture:
                     editor = Instantiate(Resources.Load<GameObject>("Prefabs/PictureEditor"), GameObject.Find("Canvas").transform);
                     editor.transform.Find("InputField").GetComponent<InputField>().text = script.imagePath;
-                    editor.transform.Find("InputField").GetComponent<InputField>().onEndEdit.AddListener(new UnityEngine.Events.UnityAction<string>((val) =>
-                    {
+                    editor.transform.Find("InputField").GetComponent<InputField>().onEndEdit.AddListener(new UnityEngine.Events.UnityAction<string>((val) => {
                         val = val.Trim('\n', '\r', '\"', '\'', ' ', '\t');
-                        if (File.Exists(val))
-                        {
-                            using (FileStream stream = new FileStream(val, FileMode.Open, FileAccess.Read))
-                            {
+                        if (File.Exists(val)) {
+                            using (FileStream stream = new FileStream(val, FileMode.Open, FileAccess.Read)) {
                                 byte[] arr = new byte[stream.Length];
                                 stream.Read(arr, 0, (int)stream.Length);
                                 Texture2D tex = new Texture2D(0, 0);
@@ -652,15 +558,12 @@ public class BoardItemController : MonoBehaviour
 
                                 int w = tex.width;
                                 int h = tex.height;
-                                if (SettingsManager.imageLimit && (w > 512 || h > 512))
-                                {
-                                    if (((float)w) / h > 1)
-                                    {
+                                if (SettingsManager.imageLimit && (w > 512 || h > 512)) {
+                                    if (((float)w) / h > 1) {
                                         Debug.Log("512 " + (int)((512f / w) * h));
                                         TextureScale.Bilinear(tex, 512, (int)((512f / w) * h));
                                     }
-                                    else if (((float)w) / h < 1)
-                                    {
+                                    else if (((float)w) / h < 1) {
                                         Debug.Log((int)((512f / h) * w) + " 512");
                                         TextureScale.Bilinear(tex, (int)((512f / h) * w), 512);
                                     }
@@ -677,14 +580,12 @@ public class BoardItemController : MonoBehaviour
                     }));
 
                     editor.transform.Find("Slider").GetComponent<Slider>().value = script.scale;
-                    editor.transform.Find("Slider").GetComponent<Slider>().onValueChanged.AddListener(new UnityEngine.Events.UnityAction<float>((val) =>
-                    {
+                    editor.transform.Find("Slider").GetComponent<Slider>().onValueChanged.AddListener(new UnityEngine.Events.UnityAction<float>((val) => {
                         script.scale = val / 100f;
                         script.ResizeImage();
                     }));
 
-                    editor.transform.Find("LoadImage").GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(() =>
-                    {
+                    editor.transform.Find("LoadImage").GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(() => {
                         GameObject created = Instantiate(Resources.Load<GameObject>("Prefabs/LoadDialog"), GameObject.Find("Canvas").transform);
                         editor.transform.Find("InputField").GetComponent<InputField>().enabled = false;
                         editor.transform.Find("Slider").GetComponent<Slider>().enabled = false;
@@ -693,8 +594,7 @@ public class BoardItemController : MonoBehaviour
                         editor.transform.Find("Close").GetComponent<Button>().enabled = false;
                         editor.transform.Find("LoadImage").GetComponent<Button>().enabled = false;
                         editor.transform.Find("SaveImage").GetComponent<Button>().enabled = false;
-                        created.GetComponentInChildren<FileDisplay>().cancel = new System.Action(() =>
-                        {
+                        created.GetComponentInChildren<FileDisplay>().cancel = new System.Action(() => {
                             editor.transform.Find("InputField").GetComponent<InputField>().enabled = true;
                             editor.transform.Find("Slider").GetComponent<Slider>().enabled = true;
                             editor.transform.Find("Delete").GetComponent<Button>().enabled = true;
@@ -703,8 +603,7 @@ public class BoardItemController : MonoBehaviour
                             editor.transform.Find("LoadImage").GetComponent<Button>().enabled = true;
                             editor.transform.Find("SaveImage").GetComponent<Button>().enabled = true;
                         });
-                        created.GetComponentInChildren<FileDisplay>().fileAction = new System.Action<FileInfo>((inf) =>
-                        {
+                        created.GetComponentInChildren<FileDisplay>().fileAction = new System.Action<FileInfo>((inf) => {
                             if (!inf.Exists) return;
                             SettingsManager.lastImagePath = inf.Directory;
                             editor.transform.Find("InputField").GetComponent<InputField>().text = inf.FullName;
@@ -722,8 +621,7 @@ public class BoardItemController : MonoBehaviour
 
                         created.GetComponentInChildren<FileDisplay>().Display(SettingsManager.lastImagePath, ".jpg", ".jpeg", ".png");
                     }));
-                    editor.transform.Find("SaveImage").GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(() =>
-                    {
+                    editor.transform.Find("SaveImage").GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(() => {
                         GameObject created = Instantiate(Resources.Load<GameObject>("Prefabs/ImageSaveDialog"), GameObject.Find("Canvas").transform);
                         editor.transform.Find("InputField").GetComponent<InputField>().enabled = false;
                         editor.transform.Find("Slider").GetComponent<Slider>().enabled = false;
@@ -732,8 +630,7 @@ public class BoardItemController : MonoBehaviour
                         editor.transform.Find("Close").GetComponent<Button>().enabled = false;
                         editor.transform.Find("LoadImage").GetComponent<Button>().enabled = false;
                         editor.transform.Find("SaveImage").GetComponent<Button>().enabled = false;
-                        created.GetComponentInChildren<FileDisplay>().cancel = new System.Action(() =>
-                        {
+                        created.GetComponentInChildren<FileDisplay>().cancel = new System.Action(() => {
                             editor.transform.Find("InputField").GetComponent<InputField>().enabled = true;
                             editor.transform.Find("Slider").GetComponent<Slider>().enabled = true;
                             editor.transform.Find("Delete").GetComponent<Button>().enabled = true;
@@ -743,22 +640,17 @@ public class BoardItemController : MonoBehaviour
                             editor.transform.Find("SaveImage").GetComponent<Button>().enabled = true;
                         });
 
-                        created.transform.Find("Save").GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(() =>
-                        {
+                        created.transform.Find("Save").GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(() => {
                             string path = created.transform.Find("Path").GetComponent<InputField>().text;
                             string name = created.transform.Find("InputField").GetComponent<InputField>().text == "" ? "Unnamed" : created.transform.Find("InputField").GetComponent<InputField>().text;
                             string ext = created.transform.Find("FormatDropdown").GetComponent<Dropdown>().options[created.transform.Find("FormatDropdown").GetComponent<Dropdown>().value].text;
-                            if (File.Exists(path + "\\" + name + ext))
-                            {
+                            if (File.Exists(path + Path.DirectorySeparatorChar + name + ext)) {
                                 dialog = Instantiate(Resources.Load<GameObject>("Prefabs/ConfirmDialog"), GameObject.Find("Canvas").transform);
                                 dialog.transform.Find("Text").GetComponent<Text>().text = "Are you sure you want to overwrite this file?";
-                                dialog.transform.Find("Accept").GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(() =>
-                                {
-                                    using (FileStream writer = new FileStream(path + "\\" + name + ext, FileMode.Create, FileAccess.Write))
-                                    {
+                                dialog.transform.Find("Accept").GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(() => {
+                                    using (FileStream writer = new FileStream(path + Path.DirectorySeparatorChar + name + ext, FileMode.Create, FileAccess.Write)) {
                                         byte[] arr;
-                                        switch (ext)
-                                        {
+                                        switch (ext) {
                                             case ".jpg":
                                                 arr = ((Texture2D)script.transform.Find("Picture").Find("Image").GetComponent<MeshRenderer>().material.mainTexture).EncodeToJPG(100);
                                                 writer.Write(arr, 0, arr.Length);
@@ -784,19 +676,15 @@ public class BoardItemController : MonoBehaviour
                                     dialog = null;
                                     Destroy(created);
                                 }));
-                                dialog.transform.Find("Cancel").GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(() =>
-                                {
+                                dialog.transform.Find("Cancel").GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(() => {
                                     Destroy(dialog);
                                     dialog = null;
                                 }));
                             }
-                            else
-                            {
-                                using (FileStream writer = new FileStream(path + "\\" + name + ext, FileMode.Create, FileAccess.Write))
-                                {
+                            else {
+                                using (FileStream writer = new FileStream(path + Path.DirectorySeparatorChar + name + ext, FileMode.Create, FileAccess.Write)) {
                                     byte[] arr;
-                                    switch (ext)
-                                    {
+                                    switch (ext) {
                                         case ".jpg":
                                             arr = ((Texture2D)script.transform.Find("Picture").Find("Image").GetComponent<MeshRenderer>().material.mainTexture).EncodeToJPG(100);
                                             writer.Write(arr, 0, arr.Length);
@@ -822,19 +710,15 @@ public class BoardItemController : MonoBehaviour
                             }
                         }));
 
-                        created.GetComponentInChildren<FileDisplay>().fileAction = new System.Action<FileInfo>((inf) =>
-                        {
+                        created.GetComponentInChildren<FileDisplay>().fileAction = new System.Action<FileInfo>((inf) => {
                             if (!inf.Exists) return;
 
                             dialog = Instantiate(Resources.Load<GameObject>("Prefabs/ConfirmDialog"), GameObject.Find("Canvas").transform);
                             dialog.transform.Find("Text").GetComponent<Text>().text = "Are you sure you want to overwrite this file?";
-                            dialog.transform.Find("Accept").GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(() =>
-                            {
-                                using (FileStream writer = new FileStream(inf.FullName, FileMode.Truncate, FileAccess.Write))
-                                {
+                            dialog.transform.Find("Accept").GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(() => {
+                                using (FileStream writer = new FileStream(inf.FullName, FileMode.Truncate, FileAccess.Write)) {
                                     byte[] arr;
-                                    switch (inf.Extension)
-                                    {
+                                    switch (inf.Extension) {
                                         case ".jpg":
                                             arr = ((Texture2D)script.transform.Find("Picture").Find("Image").GetComponent<MeshRenderer>().material.mainTexture).EncodeToJPG(100);
                                             writer.Write(arr, 0, arr.Length);
@@ -863,8 +747,7 @@ public class BoardItemController : MonoBehaviour
                                 Destroy(dialog);
                                 Destroy(created);
                             }));
-                            dialog.transform.Find("Cancel").GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(() =>
-                            {
+                            dialog.transform.Find("Cancel").GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(() => {
                                 Destroy(dialog);
                                 dialog = null;
                             }));
@@ -880,45 +763,35 @@ public class BoardItemController : MonoBehaviour
             editor.transform.Find("ApplyColor").GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(() => {
                 script.SetColor(PinColor);
             }));
-            editor.transform.Find("Disconnect").GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(() =>
-            {
-                foreach (var item in FindObjectsOfType<LineScript>())
-                {
-                    if (item.pin1 == script || item.pin2 == script)
-                    {
+            editor.transform.Find("Disconnect").GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(() => {
+                foreach (var item in FindObjectsOfType<LineScript>()) {
+                    if (item.pin1 == script || item.pin2 == script) {
                         item.pin1 = null;
                         item.pin2 = null;
                     }
                 }
             }));
-            editor.transform.Find("Delete").GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(() =>
-            {
+            editor.transform.Find("Delete").GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(() => {
                 Destroy(script.transform.gameObject);
                 Destroy(editor);
             }));
-            editor.transform.Find("Close").GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(() =>
-            {
+            editor.transform.Find("Close").GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(() => {
                 Destroy(editor);
             }));
         }
     }
 
-    public void ClearContext()
-    {
-        for (int i = GameObject.Find("ContextParent").transform.childCount - 1; i >= 0; i--)
-        {
+    public void ClearContext() {
+        for (int i = GameObject.Find("ContextParent").transform.childCount - 1; i >= 0; i--) {
             DestroyImmediate(GameObject.Find("ContextParent").transform.GetChild(i).gameObject);
         }
         Destroy(editor);
     }
-    public GameObject CreateEmpty(Vector3 point, float rot)
-    {
+    public GameObject CreateEmpty(Vector3 point, float rot) {
         point.z = -.125f;
         GameObject created = Instantiate(Resources.Load<GameObject>("Prefabs/PinFull"), point, Quaternion.Euler(0, 0, rot), GameObject.Find("BoardItems").transform);
-        for (int i = 1; i <= pinlimit; i++)
-        {
-            if (!GameObject.Find("Pin" + i.ToString("d4")))
-            {
+        for (int i = 1; i <= pinlimit; i++) {
+            if (!GameObject.Find("Pin" + i.ToString("d4"))) {
                 created.name = "Pin" + i.ToString("d4");
                 break;
             }
@@ -928,14 +801,11 @@ public class BoardItemController : MonoBehaviour
         created.GetComponent<PinScript>().type = PinTypeEnum.Empty;
         return created;
     }
-    public GameObject CreateLabel(Vector3 point, float rot)
-    {
+    public GameObject CreateLabel(Vector3 point, float rot) {
         point.z = -.125f;
         GameObject created = Instantiate(Resources.Load<GameObject>("Prefabs/PinFull"), point, Quaternion.Euler(0, 0, rot), GameObject.Find("BoardItems").transform);
-        for (int i = 1; i <= pinlimit; i++)
-        {
-            if (!GameObject.Find("Pin" + i.ToString("d4")))
-            {
+        for (int i = 1; i <= pinlimit; i++) {
+            if (!GameObject.Find("Pin" + i.ToString("d4"))) {
                 created.name = "Pin" + i.ToString("d4");
                 break;
             }
@@ -946,14 +816,11 @@ public class BoardItemController : MonoBehaviour
         created.transform.Find("Header").gameObject.SetActive(true);
         return created;
     }
-    private GameObject CreateLabel2(Vector3 point, float rot)
-    {
+    private GameObject CreateLabel2(Vector3 point, float rot) {
         point.z = -.125f;
         GameObject created = Instantiate(Resources.Load<GameObject>("Prefabs/Label2"), point, Quaternion.Euler(0, 0, rot), GameObject.Find("BoardItems").transform);
-        for (int i = 1; i <= pinlimit; i++)
-        {
-            if (!GameObject.Find("Pin" + i.ToString("d4")))
-            {
+        for (int i = 1; i <= pinlimit; i++) {
+            if (!GameObject.Find("Pin" + i.ToString("d4"))) {
                 created.name = "Pin" + i.ToString("d4");
                 break;
             }
@@ -965,14 +832,11 @@ public class BoardItemController : MonoBehaviour
         created.transform.Find("Header").gameObject.SetActive(true);
         return created;
     }
-    public GameObject CreatePicture(Vector3 point, float rot)
-    {
+    public GameObject CreatePicture(Vector3 point, float rot) {
         point.z = -.125f;
         GameObject created = Instantiate(Resources.Load<GameObject>("Prefabs/PinFull"), point, Quaternion.Euler(0, 0, rot), GameObject.Find("BoardItems").transform);
-        for (int i = 1; i <= pinlimit; i++)
-        {
-            if (!GameObject.Find("Pin" + i.ToString("d4")))
-            {
+        for (int i = 1; i <= pinlimit; i++) {
+            if (!GameObject.Find("Pin" + i.ToString("d4"))) {
                 created.name = "Pin" + i.ToString("d4");
                 break;
             }
@@ -984,14 +848,11 @@ public class BoardItemController : MonoBehaviour
         created.transform.Find("Picture").gameObject.SetActive(true);
         return created;
     }
-    public GameObject CreateText(Vector3 point, float rot)
-    {
+    public GameObject CreateText(Vector3 point, float rot) {
         point.z = -.125f;
         GameObject created = Instantiate(Resources.Load<GameObject>("Prefabs/PinFull"), point, Quaternion.Euler(0, 0, rot), GameObject.Find("BoardItems").transform);
-        for (int i = 1; i <= pinlimit; i++)
-        {
-            if (!GameObject.Find("Pin" + i.ToString("d4")))
-            {
+        for (int i = 1; i <= pinlimit; i++) {
+            if (!GameObject.Find("Pin" + i.ToString("d4"))) {
                 created.name = "Pin" + i.ToString("d4");
                 break;
             }
@@ -1011,8 +872,7 @@ public static partial class Extensions
     /// </summary>
     /// <param name="stream"></param>
     /// <param name="word">2 bytes of value to write.</param>
-    public static void WriteWord(this FileStream stream, short word)
-    {
+    public static void WriteWord(this FileStream stream, short word) {
         stream.WriteByte((byte)word);
         stream.WriteByte((byte)(word >> 8));
     }
@@ -1021,8 +881,7 @@ public static partial class Extensions
     /// </summary>
     /// <param name="stream"></param>
     /// <returns>short value representing 2 bytes of data</returns>
-    public static short ReadWord(this FileStream stream)
-    {
+    public static short ReadWord(this FileStream stream) {
         short w;
         w = (byte)stream.ReadByte();
         w += (short)(stream.ReadByte() << 8);
@@ -1033,10 +892,8 @@ public static partial class Extensions
     /// </summary>
     /// <param name="stream"></param>
     /// <param name="dword">8 bytes of value to write.</param>
-    public static void WriteDWord(this FileStream stream, int dword)
-    {
-        for (int i = 0; i < 4; i++)
-        {
+    public static void WriteDWord(this FileStream stream, int dword) {
+        for (int i = 0; i < 4; i++) {
             stream.WriteByte((byte)(dword >> (i * 8)));
         }
     }
@@ -1045,11 +902,9 @@ public static partial class Extensions
     /// </summary>
     /// <param name="stream"></param>
     /// <returns>long value representing 2 bytes of data</returns>
-    public static int ReadDWord(this FileStream stream)
-    {
+    public static int ReadDWord(this FileStream stream) {
         long r = 0;
-        for (int i = 0; i < 4; i++)
-        {
+        for (int i = 0; i < 4; i++) {
             int a = stream.ReadByte();
             r += a << (i * 8);
         }
@@ -1060,10 +915,8 @@ public static partial class Extensions
     /// </summary>
     /// <param name="stream"></param>
     /// <param name="qword">8 bytes of value to write.</param>
-    public static void WriteQWord(this FileStream stream, long qword)
-    {
-        for (int i = 0; i < 8; i++)
-        {
+    public static void WriteQWord(this FileStream stream, long qword) {
+        for (int i = 0; i < 8; i++) {
             stream.WriteByte((byte)(qword >> (i * 8)));
         }
     }
@@ -1072,11 +925,9 @@ public static partial class Extensions
     /// </summary>
     /// <param name="stream"></param>
     /// <returns>long value representing 2 bytes of data</returns>
-    public static long ReadQWord(this FileStream stream)
-    {
+    public static long ReadQWord(this FileStream stream) {
         long r = 0;
-        for (int i = 0; i < 8; i++)
-        {
+        for (int i = 0; i < 8; i++) {
             r += (long)stream.ReadByte() << (i * 8);
         }
         return r;

@@ -59,7 +59,7 @@ public static class BoardSizeController
         GameObject.Find("BottomEdge").transform.localPosition = new Vector3(0, -size.y/2 - .25f, -.1f);
         GameObject.Find("BottomEdge").transform.localScale = new Vector3(size.x, .5f, .1f);
 
-        if (!SettingsManager._2dmode) GameObject.Find("BackWall").transform.localScale = new Vector3(size.x + 2.5f, size.y + 2.5f, .1f);
+        GameObject.Find("BackWall").transform.localScale = new Vector3(size.x + 2.5f + 100f, size.y + 2.5f + 100f, .1f);
 
         GameObject.Find("LeftWall").transform.localScale = new Vector3(25, size.y + 2.5f, .1f);
         GameObject.Find("RightWall").transform.localScale = new Vector3(25, size.y + 2.5f, .1f);
